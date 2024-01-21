@@ -2,7 +2,7 @@
 
 Welcome to the Airline Flights Management System, a comprehensive solution built using Node.js and Express.js, following the MVC architecture. This system is designed to manage various aspects of an airline, and it consists of microservices that handle specific functionalities.
 
-![Alt text](<Blank board.png>)
+![Alt text](Architecture.png)
 
 ## Table of Contents
 
