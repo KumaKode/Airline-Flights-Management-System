@@ -71,7 +71,7 @@ npm install
 npx sequelize init --force
 ```
 
-The configuration file is located in the `config` folder. Create a preffered database name and add your database credentials.
+- The configuration file is located in the `config` folder. Create a preffered database name and add your database credentials.
 
 4. Start each microservice by defining the environment variables:
 
