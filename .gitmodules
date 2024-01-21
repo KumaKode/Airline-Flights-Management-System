@@ -1,0 +1,12 @@
+[submodule "Flights-Service"]
+	path = Flights-Service
+	url = https://github.com/KumaKode/Flights-Service
+[submodule "API-Gateway"]
+	path = API-Gateway
+	url = https://github.com/KumaKode/API-Gateway
+[submodule "Flights-Booking-Service"]
+	path = Flights-Booking-Service
+	url = https://github.com/KumaKode/Flights-Booking-Service
+[submodule "Notification-Service"]
+	path = Notification-Service
+	url = https://github.com/KumaKode/Notification-Service
