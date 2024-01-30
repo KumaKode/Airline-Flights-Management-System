@@ -92,7 +92,7 @@ npm run dev
 
 5. For running the project in docker, you can do the following:
 
-- Convert the config.json file in every project config folder to js file and add the following code:
+- Convert the config.json file in every service config folder to js file and add the following code:
 
 ```
 require("dotenv").config();
