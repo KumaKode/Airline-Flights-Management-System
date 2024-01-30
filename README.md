@@ -90,6 +90,55 @@ npm run dev
 
 ```
 
+5. For running the project in docker, you can do the following:
+
+- Convert the config.json file in every project config folder to js file and add the following code:
+
+```
+require("dotenv").config();
+const isDocker = require("./is-docker"); //Checking if running on docker!
+
+// prettier-ignore
+module.exports = {
+  "development": {
+    "username": isDocker() ? process.env.MYSQL_ROOT_USER : "root",
+    "password": isDocker() ? process.env.MYSQL_ROOT_PASSWORD : "yourLocalPassword",
+    "database": "yourDataBaseName",
+    "host": isDocker() ? process.env.DB_HOST : "127.0.0.1",
+    "dialect": "mysql"
+},
+"test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+},
+"production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+}
+};
+
+```
+
+6. In your services root directory, add the following environment variables in your .env file:
+
+```
+MYSQL_ROOT_USER = "root"
+MYSQL_ROOT_PASSWORD = "mypassword"
+DB_HOST = "airline-db" // Name of the database container
+```
+
+7. To run the project in docker:
+
+```
+docker compose up
+```
+
 ## Contributing
 
 Feel free to contribute to the project by opening issues or creating pull requests.

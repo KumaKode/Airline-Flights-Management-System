@@ -1,0 +1,124 @@
+version: "3"
+
+networks:
+  airline-microservice-network:
+    driver: bridge
+volumes:
+  api-gateway-node-modules:
+  booking-service-node-modules:
+  flights-service-node-modules:
+  notification-service-node-modules:
+  db_data:
+  rabbitmq-data:
+
+services:
+  # Application services
+  api-gateway:
+    image: airline-api-gateway
+    container_name: api-gateway
+    build: ./API-gateway
+    ports:
+      - "5000:5000"
+    networks:
+      - airline-microservice-network
+    volumes:
+      - ./API-gateway/src:/developer/nodejs/api-gateway/src
+      - api-gateway-node-modules:/developer/nodejs/api-gateway/node_modules
+    env_file:
+      - ./API-gateway/.env
+    depends_on:
+      airline-db:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+
+  booking-service:
+    image: airline-booking-service
+    container_name: booking-service
+    build: ./Flights-Booking-Service
+    ports:
+      - "4000:4000"
+    networks:
+      - airline-microservice-network
+    volumes:
+      - ./Flights-Booking-Service/src:/developer/nodejs/booking-service/src
+      - booking-service-node-modules:/developer/nodejs/booking-service/node_modules
+    env_file:
+      - ./Flights-Booking-Service/.env
+    depends_on:
+      airline-db:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+
+  flights-service:
+    image: airline-flights-service
+    container_name: flights-service
+    build: ./Flights-Service
+    ports:
+      - "3000:3000"
+    networks:
+      - airline-microservice-network
+    volumes:
+      - ./Flights-Service/src:/developer/nodejs/flights-service/src
+      - flights-service-node-modules:/developer/nodejs/flights-service/node_modules
+    env_file:
+      - ./Flights-Service/.env
+    depends_on:
+      airline-db:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+
+  notification-service:
+    image: airline-notification-service
+    container_name: notification-service
+    build: ./Notification-Service
+    ports:
+      - "6000:6000"
+    networks:
+      - airline-microservice-network
+    volumes:
+      - ./Notification-Service/src:/developer/nodejs/notification-service/src
+      - notification-service-node-modules:/developer/nodejs/notification-service/node_modules
+    env_file:
+      - ./Notification-Service/.env
+    depends_on:
+      airline-db:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+
+  # DB service
+  airline-db:
+    image: mysql
+    container_name: airline-db
+    ports:
+      - "3307:3306"
+    networks:
+      - airline-microservice-network
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: mypassword
+
+  # Messaging Queue service
+  rabbitmq:
+    image: rabbitmq:3.9.29-management
+    container_name: rabbitmq
+    networks:
+      - airline-microservice-network
+    ports:
+      - "5673:5672" #amqp
+      - "15673:15672" #http
+      - "15693:15692" #prometheus
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+      # - ./etc/rabbitmq/conf:/etc/rabbitmq/
+      # - ./etc/rabbitmq/logs/:/var/log/rabbitmq/
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
